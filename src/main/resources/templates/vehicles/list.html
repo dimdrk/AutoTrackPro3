@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicles - AutoTrackPro3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        h1 {
+            color: #333;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        .btn-danger {
+            background: #f44336;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .btn-danger:hover {
+            background: #da190b;
+        }
+        .btn-info {
+            background: #2196F3;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .btn-info:hover {
+            background: #0b7dda;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        tr:hover {
+            background: #f9f9f9;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 20px;
+        }
+        .pagination a, .pagination span {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #667eea;
+        }
+        .pagination a:hover {
+            background: #667eea;
+            color: white;
+        }
+        .pagination .current {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚙 Vehicles</h1>
+            <div class="buttons">
+                <a href="/" class="btn btn-secondary">Home</a>
+                <a href="/vehicles/add" class="btn btn-primary">+ Add Vehicle</a>
+            </div>
+        </div>
+
+        <div th:if="${vehicles.isEmpty()}" class="empty-message">
+            <p>No vehicles found. <a href="/vehicles/add">Add your first vehicle</a></p>
+        </div>
+
+        <div th:unless="${vehicles.isEmpty()}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>VIN</th>
+                        <th>License Plate</th>
+                        <th>Make</th>
+                        <th>Model</th>
+                        <th>Type</th>
+                        <th>Year</th>
+                        <th>Odometer</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="vehicle : ${vehicles.content}">
+                        <td th:text="${vehicle.vin}"></td>
+                        <td th:text="${vehicle.licencePlate}"></td>
+                        <td th:text="${vehicle.make}"></td>
+                        <td th:text="${vehicle.model}"></td>
+                        <td th:text="${vehicle.type}"></td>
+                        <td th:text="${vehicle.productionDate}"></td>
+                        <td th:text="${vehicle.odometer}"></td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:href="'/vehicles/edit/' + ${vehicle.id}" class="btn btn-info">Edit</a>
+                                <a th:href="'/vehicles/delete/' + ${vehicle.id}" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination" th:if="${vehicles.totalPages > 1}">
+                <a th:if="${currentPage > 0}" th:href="'/vehicles?page=' + (${currentPage} - 1) + '&size=' + ${pageSize}">← Previous</a>
+                <span th:each="i : ${#numbers.sequence(0, vehicles.totalPages - 1)}" 
+                      th:class="${i == currentPage} ? 'current' : ''">
+                    <a th:if="${i != currentPage}" th:href="'/vehicles?page=' + ${i} + '&size=' + ${pageSize}" th:text="${i + 1}"></a>
+                    <span th:if="${i == currentPage}" th:text="${i + 1}"></span>
+                </span>
+                <a th:if="${currentPage < vehicles.totalPages - 1}" th:href="'/vehicles?page=' + (${currentPage} + 1) + '&size=' + ${pageSize}">Next →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

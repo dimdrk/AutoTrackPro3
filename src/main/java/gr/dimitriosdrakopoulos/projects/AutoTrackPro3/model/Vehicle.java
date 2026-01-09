@@ -1,11 +1,14 @@
 package gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-import gr.dimitriosdrakopoulos.core.enums.Color;
-import gr.dimitriosdrakopoulos.core.enums.Fuel;
-import gr.dimitriosdrakopoulos.core.enums.Gearbox;
-import gr.dimitriosdrakopoulos.core.enums.VehicleType;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Color;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Fuel;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Gearbox;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.VehicleType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +33,7 @@ public class Vehicle extends AbstractEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String vin;
@@ -60,4 +64,7 @@ public class Vehicle extends AbstractEntity {
 
     @Column(nullable = false)
     private String odometer;
+
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServiceRecord> serviceRecords = new ArrayList<>();
 }

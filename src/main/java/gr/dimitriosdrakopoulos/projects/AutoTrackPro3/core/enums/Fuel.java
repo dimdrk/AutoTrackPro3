@@ -1,4 +1,4 @@
-package gr.dimitriosdrakopoulos.core.enums;
+package gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums;
 
 public enum Fuel {
     PETROL,

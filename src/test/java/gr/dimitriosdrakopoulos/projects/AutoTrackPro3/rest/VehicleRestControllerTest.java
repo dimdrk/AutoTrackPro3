@@ -8,14 +8,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,9 +28,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Color;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Fuel;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Gender;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Gearbox;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.RoleType;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.VehicleType;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model.User;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model.Vehicle;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.repository.UserRepository;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.repository.VehicleRepository;
 
 @SpringBootTest
@@ -41,6 +50,50 @@ class VehicleRestControllerTest {
 
     @Autowired
     private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private User testOwner;
+
+    @BeforeEach
+    void setUp() {
+        // Clean up before each test
+        vehicleRepository.deleteAll();
+        userRepository.deleteAll();
+        
+        // Create a test owner user
+        testOwner = new User();
+        testOwner.setIsActive(true);
+        testOwner.setUsername("TestOwner");
+        testOwner.setPassword("Password123@");
+        testOwner.setFirstname("Test");
+        testOwner.setLastname("Owner");
+        testOwner.setEmail("testowner@example.com");
+        testOwner.setPhonenumber("5555555555");
+        testOwner.setGender(Gender.MALE);
+        testOwner.setRoleType(RoleType.OWNER);
+        testOwner.setDriverLicence("DL-TEST-OWNER");
+        testOwner.setLicenceExpiration(LocalDate.of(2030, 12, 31));
+        testOwner.setLicenceCategory("B");
+        testOwner.setIdentityNumber("ID-TEST-OWNER");
+        testOwner.setCity("Test City");
+        testOwner = userRepository.save(testOwner);
+
+        // Mock the security context to return this user
+        UsernamePasswordAuthenticationToken authentication = 
+            new UsernamePasswordAuthenticationToken(testOwner, null, testOwner.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Clear security context after each test
+        SecurityContextHolder.clearContext();
+        // Clean up data after each test
+        vehicleRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     void createVehicle_persistsAndReturnsVehicle() throws Exception {
@@ -69,6 +122,8 @@ class VehicleRestControllerTest {
         existing.setFuel(Fuel.PETROL);
         existing.setGearbox(Gearbox.MANUAL);
         existing.setOdometer("12000");
+        existing.setOwners(new ArrayList<>());
+        existing.getOwners().add(testOwner);
         existing = vehicleRepository.save(existing);
 
         Map<String, Object> dto = validVehiclePayload("VIN-200", "XYZ-2000");
@@ -98,6 +153,8 @@ class VehicleRestControllerTest {
         existing.setFuel(Fuel.DIESEL);
         existing.setGearbox(Gearbox.AUTOMATIC);
         existing.setOdometer("34000");
+        existing.setOwners(new ArrayList<>());
+        existing.getOwners().add(testOwner);
         existing = vehicleRepository.save(existing);
 
         mockMvc.perform(delete("/api/vehicles/delete/")

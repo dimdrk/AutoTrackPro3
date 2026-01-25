@@ -94,7 +94,6 @@ public class ServiceRecordService {
                 .stream().map(serviceRecordMapper::mapServiceRecordReadOnlyDTO).toList();
     }
 
-    @SuppressWarnings("null")
     private Specification<ServiceRecord> getSpecsFromFilters(ServiceRecordFilters filters) {
         return Specification
                 .where(ServiceRecordSpecification.serviceRecordVehicleIs(filters.getLicencePlate()))

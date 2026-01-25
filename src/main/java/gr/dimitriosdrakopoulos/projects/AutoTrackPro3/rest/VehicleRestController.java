@@ -58,7 +58,7 @@ public class VehicleRestController {
     @PatchMapping("/vehicles/update/{id}")
     public ResponseEntity<VehicleReadOnlyDTO> updateVehicle(
             @RequestParam(name = "id") Long id,
-            @Valid @RequestBody VehicleInsertDTO vehicleUpdateDTO) throws AppObjectInvalidArgumentException, AppObjectNotFoundException, AppServerException {
+            @Valid @RequestBody VehicleInsertDTO vehicleUpdateDTO) throws AppObjectInvalidArgumentException, AppObjectNotFoundException, AppObjectNotAuthorizedException, AppServerException {
 
                 VehicleReadOnlyDTO vehicleReadOnlyDTO = vehicleService.updateVehicle(id, vehicleUpdateDTO);
         return new ResponseEntity<>(vehicleReadOnlyDTO, HttpStatus.OK);
@@ -66,7 +66,7 @@ public class VehicleRestController {
 
     @DeleteMapping("/vehicles/delete/")
     public ResponseEntity<VehicleReadOnlyDTO> deleteVehicle(
-                @RequestParam(name = "id") Long id) throws AppObjectInvalidArgumentException, AppObjectNotFoundException, AppServerException {
+                @RequestParam(name = "id") Long id) throws AppObjectInvalidArgumentException, AppObjectNotFoundException, AppObjectNotAuthorizedException, AppServerException {
         
                     VehicleReadOnlyDTO vehicleReadOnlyDTO = vehicleService.getVehicleById(id);
                     vehicleService.deleteVehicle(id);
@@ -96,5 +96,43 @@ public class VehicleRestController {
             LOGGER.error("ERROR: Could not get vehicles.", e);
             throw e;
         }
+    }
+
+    // Owner management endpoints
+    @PostMapping("/vehicles/{vehicleId}/owners/{userId}")
+    public ResponseEntity<VehicleReadOnlyDTO> addOwner(
+            @RequestParam(name = "vehicleId") Long vehicleId,
+            @RequestParam(name = "userId") Long userId) throws AppObjectNotFoundException, AppObjectNotAuthorizedException, AppObjectInvalidArgumentException {
+        
+        VehicleReadOnlyDTO vehicleReadOnlyDTO = vehicleService.addOwnerToVehicle(vehicleId, userId);
+        return new ResponseEntity<>(vehicleReadOnlyDTO, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/vehicles/{vehicleId}/owners/{userId}")
+    public ResponseEntity<VehicleReadOnlyDTO> removeOwner(
+            @RequestParam(name = "vehicleId") Long vehicleId,
+            @RequestParam(name = "userId") Long userId) throws AppObjectNotFoundException, AppObjectNotAuthorizedException, AppObjectInvalidArgumentException {
+        
+        VehicleReadOnlyDTO vehicleReadOnlyDTO = vehicleService.removeOwnerFromVehicle(vehicleId, userId);
+        return new ResponseEntity<>(vehicleReadOnlyDTO, HttpStatus.OK);
+    }
+
+    // Driver management endpoints
+    @PostMapping("/vehicles/{vehicleId}/drivers/{userId}")
+    public ResponseEntity<VehicleReadOnlyDTO> addDriver(
+            @RequestParam(name = "vehicleId") Long vehicleId,
+            @RequestParam(name = "userId") Long userId) throws AppObjectNotFoundException, AppObjectNotAuthorizedException, AppObjectInvalidArgumentException {
+        
+        VehicleReadOnlyDTO vehicleReadOnlyDTO = vehicleService.addDriverToVehicle(vehicleId, userId);
+        return new ResponseEntity<>(vehicleReadOnlyDTO, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/vehicles/{vehicleId}/drivers/{userId}")
+    public ResponseEntity<VehicleReadOnlyDTO> removeDriver(
+            @RequestParam(name = "vehicleId") Long vehicleId,
+            @RequestParam(name = "userId") Long userId) throws AppObjectNotFoundException, AppObjectNotAuthorizedException {
+        
+        VehicleReadOnlyDTO vehicleReadOnlyDTO = vehicleService.removeDriverFromVehicle(vehicleId, userId);
+        return new ResponseEntity<>(vehicleReadOnlyDTO, HttpStatus.OK);
     }
 }

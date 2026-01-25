@@ -1,6 +1,7 @@
 package gr.dimitriosdrakopoulos.projects.AutoTrackPro3.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Color;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Fuel;
@@ -28,4 +29,6 @@ public class VehicleReadOnlyDTO {
     private Fuel fuel;
     private Gearbox gearbox;
     private String odometer;
+    private List<String> ownerUsernames;
+    private List<String> driverUsernames;
 }

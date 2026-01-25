@@ -11,4 +11,5 @@ import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model.ServiceRecord;
 public interface ServiceRecordRepository extends JpaRepository<ServiceRecord, Long>, JpaSpecificationExecutor<ServiceRecord>  {
     
     Optional<ServiceRecord> findByDateOfService(LocalDate dateOfService);
+    boolean existsByDateOfService(LocalDate dateOfService);
 }

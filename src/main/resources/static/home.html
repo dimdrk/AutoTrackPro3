@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoTrackPro3 - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        .navbar-brand {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .navbar-auth {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .navbar-user {
+            color: white;
+            font-size: 14px;
+        }
+        .navbar-btn {
+            background: white;
+            color: #667eea;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .navbar-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        .logout-form {
+            display: inline;
+        }
+        .logout-btn {
+            background: white;
+            color: #667eea;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .logout-btn:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 18px;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .menu-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            border-color: white;
+        }
+        .menu-item h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .menu-item p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">🚗 AutoTrackPro3</a>
+        <div class="navbar-auth">
+            <!-- If not authenticated, show Login button -->
+            <sec:authorize access="!isAuthenticated()">
+                <a href="/login" class="navbar-btn">🔐 Login</a>
+            </sec:authorize>
+            
+            <!-- If authenticated, show username and Logout button -->
+            <sec:authorize access="isAuthenticated()">
+                <span class="navbar-user">👤 Hello, <sec:authentication property="principal.username"/></span>
+                <form th:action="@{/logout}" method="POST" class="logout-form">
+                    <button type="submit" class="logout-btn">🚪 Logout</button>
+                </form>
+            </sec:authorize>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+    <div class="container">
+        <h1>🚗 AutoTrackPro3</h1>
+        <p class="subtitle">Vehicle & Service Record Management System</p>
+        
+        <div class="menu-grid">
+            <a href="/login" class="menu-item">
+                <h3>🔐 Login</h3>
+                <p>Access your account</p>
+            </a>
+            <a href="/register" class="menu-item">
+                <h3>📝 Register</h3>
+                <p>Create new account</p>
+            </a>
+            <a href="/users" class="menu-item">
+                <h3>👥 Users</h3>
+                <p>View all users</p>
+            </a>
+            <a href="/users/add" class="menu-item">
+                <h3>➕ Add User</h3>
+                <p>Register new user</p>
+            </a>
+            <a href="/vehicles" class="menu-item">
+                <h3>🚙 Vehicles</h3>
+                <p>View all vehicles</p>
+            </a>
+            <a href="/vehicles/add" class="menu-item">
+                <h3>➕ Add Vehicle</h3>
+                <p>Register new vehicle</p>
+            </a>
+            <a href="/service-records" class="menu-item">
+                <h3>🔧 Service Records</h3>
+                <p>View all records</p>
+            </a>
+            <a href="/service-records/add" class="menu-item">
+                <h3>➕ Add Service Record</h3>
+                <p>Log service activity</p>
+            </a>
+        </div>
+    </div>
+    </div>
+</body>
+</html>

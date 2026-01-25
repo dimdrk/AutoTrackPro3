@@ -1,6 +1,7 @@
 package gr.dimitriosdrakopoulos.projects.AutoTrackPro3.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Color;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Fuel;
@@ -48,4 +49,10 @@ public class VehicleInsertDTO {
 
     @NotEmpty(message = "Odometer must not be empty.")
     private String odometer;
+
+    // Authenticated user will be added as first owner automatically
+    // This field is for additional owners beyond the creator
+    private List<Long> additionalOwnerIds;
+
+    private List<Long> driverIds;
 }

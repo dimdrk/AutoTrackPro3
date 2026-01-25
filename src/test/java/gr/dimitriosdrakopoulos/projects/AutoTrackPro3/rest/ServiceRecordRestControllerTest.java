@@ -8,15 +8,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,11 +29,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Color;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Fuel;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Gender;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.Gearbox;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.RoleType;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.enums.VehicleType;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model.ServiceRecord;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model.User;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model.Vehicle;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.repository.ServiceRecordRepository;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.repository.UserRepository;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.repository.VehicleRepository;
 
 @SpringBootTest
@@ -47,6 +56,52 @@ class ServiceRecordRestControllerTest {
     
     @Autowired
     private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private User testOwner;
+
+    @BeforeEach
+    void setUp() {
+        // Clean up before each test
+        serviceRecordRepository.deleteAll();
+        vehicleRepository.deleteAll();
+        userRepository.deleteAll();
+        
+        // Create a test owner user
+        testOwner = new User();
+        testOwner.setIsActive(true);
+        testOwner.setUsername("TestServiceOwner");
+        testOwner.setPassword("Password123@");
+        testOwner.setFirstname("Test");
+        testOwner.setLastname("ServiceOwner");
+        testOwner.setEmail("testserviceowner@example.com");
+        testOwner.setPhonenumber("6666666666");
+        testOwner.setGender(Gender.MALE);
+        testOwner.setRoleType(RoleType.OWNER);
+        testOwner.setDriverLicence("DL-TEST-SERVICE");
+        testOwner.setLicenceExpiration(LocalDate.of(2030, 12, 31));
+        testOwner.setLicenceCategory("B");
+        testOwner.setIdentityNumber("ID-TEST-SERVICE");
+        testOwner.setCity("Test City");
+        testOwner = userRepository.save(testOwner);
+
+        // Mock the security context to return this user
+        UsernamePasswordAuthenticationToken authentication = 
+            new UsernamePasswordAuthenticationToken(testOwner, null, testOwner.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Clear security context after each test
+        SecurityContextHolder.clearContext();
+        // Clean up data after each test
+        serviceRecordRepository.deleteAll();
+        vehicleRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     void createServiceRecord_persistsAndReturnsRecord() throws Exception {
@@ -131,6 +186,8 @@ class ServiceRecordRestControllerTest {
         vehicle.setFuel(Fuel.PETROL);
         vehicle.setGearbox(Gearbox.AUTOMATIC);
         vehicle.setOdometer("50000");
+        vehicle.setOwners(new ArrayList<>());
+        vehicle.getOwners().add(testOwner);
         return vehicleRepository.save(vehicle);
     }
 

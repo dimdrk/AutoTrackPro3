@@ -2,9 +2,9 @@ package gr.dimitriosdrakopoulos.projects.AutoTrackPro3.core.specifications;
 
 import org.springframework.data.jpa.domain.Specification;
 
-// import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model.Owner;
+import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model.User;
 import gr.dimitriosdrakopoulos.projects.AutoTrackPro3.model.Vehicle;
-// import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Join;
 
 public class VehicleSpecification {
     
@@ -12,16 +12,22 @@ public class VehicleSpecification {
 
     }
     
-    // public static Specification<Vehicle> vehicleOwnerIs(String username) {
-    //     return ((root, query, criteriaBuilder) -> {
-    //         if (username ==null || username.isBlank()) {
-    //             return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
-    //         }
+    public static Specification<Vehicle> vehicleBelongsToUser(User user) {
+        return ((root, query, criteriaBuilder) -> {
+            if (user == null) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+            }
 
-    //         Join<Vehicle, Owner> ownerVehicles = root.join("user");
-    //         return criteriaBuilder.equal(ownerVehicles.get("username"), username);
-    //     });
-    // }
+            // Vehicle belongs to user if they are in owners or drivers
+            Join<Vehicle, User> owners = root.join("owners");
+            Join<Vehicle, User> drivers = root.join("drivers");
+            
+            return criteriaBuilder.or(
+                criteriaBuilder.equal(owners, user),
+                criteriaBuilder.equal(drivers, user)
+            );
+        });
+    }
 
     public static Specification<Vehicle> vehicleStringFieldLike(String field, String value) {
         return ((root, query, criteriaBuilder) -> {

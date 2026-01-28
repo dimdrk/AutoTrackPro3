@@ -19,10 +19,12 @@ public class ServiceRecordReadOnlyDTO {
     private LocalDate dateOfService;
     private String serviceType;
     private String description;
-    private String odometer;
+    private Long odometer;
     private String parts;
     private String cost;
     private LocalDate nextService;
+    private Long nextServiceOdometer;
     private String recommentdations;
-    private String warranty;
+    private Boolean warranty;
+    private String warrantyInfo;
 }

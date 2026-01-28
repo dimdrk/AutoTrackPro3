@@ -128,12 +128,14 @@ class ServiceRecordRestControllerTest {
         existing.setDateOfService(LocalDate.of(2024, 2, 1));
         existing.setServiceType("Inspection");
         existing.setDescription("Initial desc");
-        existing.setOdometer("12000");
+        existing.setOdometer(12000L);
         existing.setParts("Filters");
         existing.setCost("200");
         existing.setNextService(LocalDate.of(2024, 8, 1));
+        existing.setNextServiceOdometer(15000L);
         existing.setRecommentdations("None");
-        existing.setWarranty("Warranty");
+        existing.setWarranty(true);
+        existing.setWarrantyInfo("Expires 12/30/2027");
         existing = serviceRecordRepository.save(existing);
 
         Map<String, Object> dto = validServiceRecordPayload(existing.getDateOfService(), vehicle.getId());
@@ -159,12 +161,14 @@ class ServiceRecordRestControllerTest {
         existing.setDateOfService(LocalDate.of(2024, 3, 1));
         existing.setServiceType("Tires");
         existing.setDescription("Rotate");
-        existing.setOdometer("15000");
+        existing.setOdometer(15000L);
         existing.setParts("None");
         existing.setCost("50");
         existing.setNextService(LocalDate.of(2024, 9, 1));
+        existing.setNextServiceOdometer(18000L);
         existing.setRecommentdations("Check");
-        existing.setWarranty("Warranty");
+        existing.setWarranty(true);
+        existing.setWarrantyInfo("Expires 12/30/2027");
         existing = serviceRecordRepository.save(existing);
 
         mockMvc.perform(delete("/api/serviceRecords/delete/")
@@ -185,7 +189,7 @@ class ServiceRecordRestControllerTest {
         vehicle.setProductionDate(LocalDate.of(2020, 1, 1));
         vehicle.setFuel(Fuel.PETROL);
         vehicle.setGearbox(Gearbox.AUTOMATIC);
-        vehicle.setOdometer("50000");
+        vehicle.setOdometer(50000L);
         vehicle.setOwners(new ArrayList<>());
         vehicle.getOwners().add(testOwner);
         return vehicleRepository.save(vehicle);
@@ -201,8 +205,10 @@ class ServiceRecordRestControllerTest {
         payload.put("parts", "Filters");
         payload.put("cost", "150");
         payload.put("nextService", dateOfService.plusMonths(6));
+        payload.put("nextServiceOdometer", 15000L);
         payload.put("recommentdations", "Check brakes");
-        payload.put("warranty", "Yes");
+        payload.put("warranty", true);
+        payload.put("warrantyInfo", "Expires 12/31/2027");
         return payload;
     }
 }

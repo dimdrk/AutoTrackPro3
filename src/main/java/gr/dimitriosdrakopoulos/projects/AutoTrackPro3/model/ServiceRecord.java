@@ -42,7 +42,7 @@ public class ServiceRecord extends AbstractEntity {
     private String description;
 
     @Column(nullable = false)
-    private String odometer;
+    private Long odometer;
 
     @Column(nullable = false)
     private String parts;
@@ -50,13 +50,19 @@ public class ServiceRecord extends AbstractEntity {
     @Column(nullable = false)
     private String cost;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate nextService;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
+    private Long nextServiceOdometer;
+
+    @Column(nullable = true)
     private String recommentdations;
 
-    @Column(nullable = false)
-    private String warranty;
+    @Column(nullable = true)
+    private Boolean warranty;
+
+    @Column(nullable = true)
+    private String warrantyInfo;
     
 }

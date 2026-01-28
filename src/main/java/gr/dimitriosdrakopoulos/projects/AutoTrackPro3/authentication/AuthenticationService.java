@@ -30,6 +30,6 @@ public class AuthenticationService {
                 .orElseThrow(() -> new AppObjectNotAuthorizedException("User", "User not authorized."));
 
         String token = jwtService.generateToken(authentication.getName(), user.getRoleType().name());
-        return new AuthenticationResponseDTO(user.getFirstname(), user.getLastname(), token);
+        return new AuthenticationResponseDTO(user, token);
     }
 }

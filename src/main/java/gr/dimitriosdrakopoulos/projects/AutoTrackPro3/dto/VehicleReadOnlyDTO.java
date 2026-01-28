@@ -28,7 +28,7 @@ public class VehicleReadOnlyDTO {
     private LocalDate productionDate;
     private Fuel fuel;
     private Gearbox gearbox;
-    private String odometer;
+    private Long odometer;
     private List<String> ownerUsernames;
     private List<String> driverUsernames;
 }

@@ -121,7 +121,7 @@ class VehicleRestControllerTest {
         existing.setProductionDate(LocalDate.of(2020, 1, 1));
         existing.setFuel(Fuel.PETROL);
         existing.setGearbox(Gearbox.MANUAL);
-        existing.setOdometer("12000");
+        existing.setOdometer(12000L);
         existing.setOwners(new ArrayList<>());
         existing.getOwners().add(testOwner);
         existing = vehicleRepository.save(existing);
@@ -152,7 +152,7 @@ class VehicleRestControllerTest {
         existing.setProductionDate(LocalDate.of(2019, 5, 5));
         existing.setFuel(Fuel.DIESEL);
         existing.setGearbox(Gearbox.AUTOMATIC);
-        existing.setOdometer("34000");
+        existing.setOdometer(34000L);
         existing.setOwners(new ArrayList<>());
         existing.getOwners().add(testOwner);
         existing = vehicleRepository.save(existing);

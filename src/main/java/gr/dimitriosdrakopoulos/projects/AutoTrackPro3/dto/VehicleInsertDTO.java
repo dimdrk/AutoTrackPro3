@@ -48,7 +48,7 @@ public class VehicleInsertDTO {
     private Gearbox gearbox;
 
     @NotEmpty(message = "Odometer must not be empty.")
-    private String odometer;
+    private Long odometer;
 
     // Authenticated user will be added as first owner automatically
     // This field is for additional owners beyond the creator

@@ -70,7 +70,7 @@ public class Vehicle extends AbstractEntity {
     private Gearbox gearbox;
 
     @Column(nullable = false)
-    private String odometer;
+    private Long odometer;
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceRecord> serviceRecords = new ArrayList<>();
